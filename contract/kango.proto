@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "/contract";
+
+message Task {
+  int64 id = 1;
+  string subject = 2;
+  string description = 3;
+  Status status = 4;
+}
+
+enum Status {
+  TODO = 0;
+  IN_PROGRESS = 1;
+  DONE = 2;
+}
+
+message TaskID {
+  int64 id = 1;
+}
+
+message TaskForm {
+  string subject = 1;
+  string description = 2;
+  int32 status = 3;
+}
+
+message TasksResponse {
+  repeated Task tasks = 1;
+}
+
+service Kanban {
+  rpc GetAllTasks (google.protobuf.Empty) returns (TasksResponse) {}
+  rpc CreateTask (Task) returns (TaskID) {}
+  rpc UpdateTask (Task) returns (Task) {}
+  rpc DeleteTask (TaskID) returns (google.protobuf.Empty) {}
+}

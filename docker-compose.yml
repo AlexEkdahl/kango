@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    user: "${UID}:${GID}"
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      HOST: 127.0.0.1
+      NAME: mydatabase
+      DB_PORT: 5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
