@@ -16,9 +16,9 @@ import (
 
 type Client interface {
 	GetAllTasks() (*[]datastruct.Task, error)
-	// CreateTask(datastruct.Task) (*int64, error)
-	// UpdateTask(datastruct.Task) (*datastruct.Task, error)
-	// DeleteTask(int64) error
+	CreateTask(*datastruct.Task) (*int64, error)
+	UpdateTask(*datastruct.Task) (*datastruct.Task, error)
+	DeleteTask(int64) error
 }
 
 type RemoteHost struct {
@@ -43,6 +43,52 @@ func (r *RemoteHost) GetAllTasks() (*[]datastruct.Task, error) {
 	}
 
 	return &tasks, nil
+}
+
+func (r *RemoteHost) CreateTask(task *datastruct.Task) (*int64, error) {
+	res, err := r.api.CreateTask(context.TODO(), &contract.Task{
+		Subject:     task.Subject,
+		Description: task.Desc,
+		Status:      contract.Status(task.Status),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error: %e", err)
+	}
+	id := res.GetId()
+
+	return &id, nil
+}
+
+func (r *RemoteHost) UpdateTask(task *datastruct.Task) (*datastruct.Task, error) {
+	res, err := r.api.UpdateTask(context.TODO(), &contract.Task{
+		Id:          task.ID,
+		Subject:     task.Subject,
+		Description: task.Desc,
+		Status:      contract.Status(task.Status),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error: %e", err)
+	}
+
+	dto := &datastruct.Task{
+		ID:      res.GetId(),
+		Status:  datastruct.Status(res.GetStatus()),
+		Subject: res.GetSubject(),
+		Desc:    res.GetDescription(),
+	}
+
+	return dto, nil
+}
+
+func (r *RemoteHost) DeleteTask(id int64) error {
+	_, err := r.api.DeleteTask(context.TODO(), &contract.TaskID{
+		Id: id,
+	})
+	if err != nil {
+		return fmt.Errorf("error: %e", err)
+	}
+
+	return nil
 }
 
 func New(c config.Config) (Client, error) {
