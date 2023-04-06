@@ -7,13 +7,13 @@ import (
 
 type KangoBoardServer struct {
 	desc.UnimplementedKanbanServer
-	taskService service.TaskService
+	TaskService service.TaskService
 }
 
 func NewMicroservice(
 	taskService service.TaskService,
 ) *KangoBoardServer {
 	return &KangoBoardServer{
-		taskService: taskService,
+		TaskService: taskService,
 	}
 }
