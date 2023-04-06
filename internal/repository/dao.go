@@ -62,6 +62,10 @@ func NewDB(c config.Config) error {
 func NewLocalDB(c config.Config) error {
 	var err error
 
+	if err = os.MkdirAll(c.DBPath, 0o755); err != nil {
+		return err
+	}
+
 	DB, err = createSQLiteDB(c.DBPath, c.DBName)
 	if err != nil {
 		return err
@@ -97,6 +101,7 @@ func createSQLiteDB(dbPath, dbName string) (*sql.DB, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to create SQLite database file: %v", err)
 		}
+
 		shouldCreateTable = true
 	}
 
