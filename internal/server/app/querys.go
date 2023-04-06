@@ -8,7 +8,7 @@ import (
 )
 
 func (m *KangoBoardServer) GetAllTasks(ctx context.Context, req *emptypb.Empty) (*desc.TasksResponse, error) {
-	tasks, err := m.taskService.GetAllTasks()
+	tasks, err := m.TaskService.GetAllTasks()
 	if err != nil {
 		return nil, err
 	}
