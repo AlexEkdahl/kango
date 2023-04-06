@@ -53,7 +53,6 @@ func NewDB(c config.Config) error {
 
 	err = DB.Ping()
 	if err != nil {
-		fmt.Println("err", err)
 		return err
 	}
 
@@ -107,7 +106,7 @@ func createSQLiteDB(dbPath, dbName string) (*sql.DB, error) {
 	}
 
 	if shouldCreateTable {
-		if err = createTaskTable(DB); err != nil {
+		if err = createTaskTable(db); err != nil {
 			return nil, err
 		}
 	}
