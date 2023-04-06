@@ -5,15 +5,15 @@ import (
 	desc "github.com/AlexEkdahl/kango/pkg/contract"
 )
 
-type MicroserviceServer struct {
+type KangoBoardServer struct {
 	desc.UnimplementedKanbanServer
 	taskService service.TaskService
 }
 
 func NewMicroservice(
 	taskService service.TaskService,
-) *MicroserviceServer {
-	return &MicroserviceServer{
+) *KangoBoardServer {
+	return &KangoBoardServer{
 		taskService: taskService,
 	}
 }
