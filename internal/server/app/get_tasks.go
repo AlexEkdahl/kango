@@ -7,7 +7,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (m *MicroserviceServer) GetAllTasks(ctx context.Context, req *emptypb.Empty) (*desc.TasksResponse, error) {
+func (m *KangoBoardServer) GetAllTasks(ctx context.Context, req *emptypb.Empty) (*desc.TasksResponse, error) {
 	tasks, err := m.taskService.GetAllTasks()
 	if err != nil {
 		return nil, err
