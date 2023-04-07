@@ -127,6 +127,8 @@ func createTaskTable(db *sql.DB) error {
 	    subject VARCHAR(255) NOT NULL,
 	    description TEXT
 	);
+	CREATE INDEX IF NOT EXISTS idx_task_id ON task (id);
+
 	`
 
 	_, err := db.Exec(createTableQuery)
