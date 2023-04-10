@@ -15,6 +15,8 @@ import (
 type DAO interface {
 	NewTaskQuery() TaskQuery
 	NewTaskMutation() TaskMutation
+	NewBoardQuery() BoardQuery
+	NewBoardMutation() BoardMutation
 }
 
 type dao struct{}
@@ -35,6 +37,14 @@ func (d *dao) NewTaskQuery() TaskQuery {
 
 func (d *dao) NewTaskMutation() TaskMutation {
 	return &taskMutation{}
+}
+
+func (d *dao) NewBoardQuery() BoardQuery {
+	return &boardQuery{}
+}
+
+func (d *dao) NewBoardMutation() BoardMutation {
+	return &boardMutation{}
 }
 
 func NewDB(c config.Config) error {
@@ -121,15 +131,32 @@ func createSQLiteDB(dbPath, dbName string) (*sql.DB, error) {
 
 func createTaskTable(db *sql.DB) error {
 	createTableQuery := `
-	CREATE TABLE IF NOT EXISTS task (
-	    id INTEGER PRIMARY KEY AUTOINCREMENT,
-	    status INTEGER NOT NULL,
-	    subject VARCHAR(255) NOT NULL,
-	    description TEXT
-	);
-	CREATE INDEX IF NOT EXISTS idx_task_id ON task (id);
+   CREATE TABLE IF NOT EXISTS task (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        status INTEGER NOT NULL,
+        subject VARCHAR(255) NOT NULL,
+        description TEXT
+    );
 
-	`
+    CREATE TABLE IF NOT EXISTS board (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name VARCHAR(255) NOT NULL,
+        description TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS task_board (
+        task_id INTEGER NOT NULL,
+        board_id INTEGER NOT NULL,
+        PRIMARY KEY (task_id, board_id),
+        FOREIGN KEY (task_id) REFERENCES task (id) ON DELETE CASCADE,
+        FOREIGN KEY (board_id) REFERENCES board (id) ON DELETE CASCADE
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_task_id ON task (id);
+    CREATE INDEX IF NOT EXISTS idx_board_id ON board (id);
+    CREATE INDEX IF NOT EXISTS idx_task_board_task_id ON task_board (task_id);
+    CREATE INDEX IF NOT EXISTS idx_task_board_board_id ON task_board (board_id);
+`
 
 	_, err := db.Exec(createTableQuery)
 	if err != nil {

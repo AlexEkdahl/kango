@@ -7,7 +7,7 @@ import (
 	desc "github.com/AlexEkdahl/kango/pkg/contract"
 )
 
-func (m *KangoBoardServer) CreateTask(ctx context.Context, req *desc.Task) (*desc.TaskID, error) {
+func (m *KangoBoardServer) CreateTask(ctx context.Context, req *desc.Task) (*desc.ResourceID, error) {
 	id, err := m.taskService.CreateTask(&datastruct.Task{
 		Status:  datastruct.Status(req.GetStatus()),
 		Subject: req.Subject,
@@ -17,7 +17,7 @@ func (m *KangoBoardServer) CreateTask(ctx context.Context, req *desc.Task) (*des
 		return nil, err
 	}
 
-	return &desc.TaskID{
+	return &desc.ResourceID{
 		Id: *id,
 	}, nil
 }

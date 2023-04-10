@@ -23,10 +23,11 @@ func main() {
 	dao := repository.NewDAO()
 
 	taskService := service.NewTaskService(dao)
+	boardService := service.NewBoardService(dao)
 
 	// Create a gRPC server and register the KanbanServer with it.
 	grpcServer := grpc.NewServer()
-	contract.RegisterKanbanServer(grpcServer, app.NewMicroservice(taskService))
+	contract.RegisterKanbanServer(grpcServer, app.NewMicroservice(taskService, boardService))
 
 	// Start the gRPC server.
 	listener, err := net.Listen("tcp", ":8080")
