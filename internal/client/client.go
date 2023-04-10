@@ -19,10 +19,17 @@ type Client interface {
 	CreateTask(*datastruct.Task) (*int64, error)
 	UpdateTask(*datastruct.Task) (*datastruct.Task, error)
 	DeleteTask(int64) error
+
+	GetAllBoards() (*[]datastruct.Board, error)
+	CreateBoard(*datastruct.Board) (*int64, error)
 }
 
 type RemoteHost struct {
 	api contract.KanbanClient
+}
+type LocalHost struct {
+	service.TaskService
+	service.BoardService
 }
 
 func (r *RemoteHost) GetAllTasks() (*[]datastruct.Task, error) {
@@ -45,11 +52,43 @@ func (r *RemoteHost) GetAllTasks() (*[]datastruct.Task, error) {
 	return &tasks, nil
 }
 
+func (r *RemoteHost) GetAllBoards() (*[]datastruct.Board, error) {
+	res, err := r.api.GetAllBoards(context.TODO(), &emptypb.Empty{})
+	if err != nil {
+		return nil, fmt.Errorf("Error getting tasks from server: %e", err)
+	}
+
+	boards := []datastruct.Board{}
+	for _, board := range res.GetBoards() {
+		t := datastruct.Board{
+			ID:   board.GetId(),
+			Name: board.Name,
+			Desc: board.Description,
+		}
+		boards = append(boards, t)
+	}
+
+	return &boards, nil
+}
+
 func (r *RemoteHost) CreateTask(task *datastruct.Task) (*int64, error) {
 	res, err := r.api.CreateTask(context.TODO(), &contract.Task{
 		Subject:     task.Subject,
 		Description: task.Desc,
 		Status:      contract.Status(task.Status),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("error: %e", err)
+	}
+	id := res.GetId()
+
+	return &id, nil
+}
+
+func (r *RemoteHost) CreateBoard(task *datastruct.Board) (*int64, error) {
+	res, err := r.api.CreateBoard(context.TODO(), &contract.Board{
+		Name:        task.Name,
+		Description: task.Desc,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("error: %e", err)
@@ -81,7 +120,7 @@ func (r *RemoteHost) UpdateTask(task *datastruct.Task) (*datastruct.Task, error)
 }
 
 func (r *RemoteHost) DeleteTask(id int64) error {
-	_, err := r.api.DeleteTask(context.TODO(), &contract.TaskID{
+	_, err := r.api.DeleteTask(context.TODO(), &contract.ResourceID{
 		Id: id,
 	})
 	if err != nil {
@@ -113,6 +152,12 @@ func New(c config.Config) (Client, error) {
 	}
 	d := repository.NewDAO()
 	t := service.NewTaskService(d)
+	b := service.NewBoardService(d)
 
-	return t, nil
+	client := LocalHost{
+		TaskService:  t,
+		BoardService: b,
+	}
+
+	return client, nil
 }

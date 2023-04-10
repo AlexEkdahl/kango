@@ -11,13 +11,20 @@ message Task {
   Status status = 4;
 }
 
+message Board {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  Status status = 4;
+}
+
 enum Status {
   TODO = 0;
   IN_PROGRESS = 1;
   DONE = 2;
 }
 
-message TaskID {
+message ResourceID {
   int64 id = 1;
 }
 
@@ -31,9 +38,16 @@ message TasksResponse {
   repeated Task tasks = 1;
 }
 
+message BoardsResponse {
+  repeated Board boards = 1;
+}
+
 service Kanban {
   rpc GetAllTasks (google.protobuf.Empty) returns (TasksResponse) {}
-  rpc CreateTask (Task) returns (TaskID) {}
+  rpc CreateTask (Task) returns (ResourceID) {}
   rpc UpdateTask (Task) returns (Task) {}
-  rpc DeleteTask (TaskID) returns (google.protobuf.Empty) {}
+  rpc DeleteTask (ResourceID) returns (google.protobuf.Empty) {}
+
+  rpc GetAllBoards (google.protobuf.Empty) returns (BoardsResponse) {}
+  rpc CreateBoard (Board) returns (ResourceID) {}
 }
