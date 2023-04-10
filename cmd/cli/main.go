@@ -11,7 +11,6 @@ import (
 
 func main() {
 	conf := config.New()
-
 	c, err := client.New(*conf)
 	if err != nil {
 		fmt.Println("err", err)

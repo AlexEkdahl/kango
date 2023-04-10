@@ -85,35 +85,33 @@ func (u UI) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case message.SelectedBoard:
 		u.currentPage = kanbanPage
 
-		u.pages[u.currentPage].Update(msg)
+		// u.pages[u.currentPage].Update(msg)
 		u = u.refreshFooterKeyMap()
 		u = u.refreshHeader(msg)
 	case message.ShowItem:
 		u.currentPage = displayModal
-		u.pages[u.currentPage].Update(msg)
+		// u.pages[u.currentPage].Update(msg)
 		u = u.refreshFooterKeyMap()
 	case message.ShowCreateModal:
 		u.currentPage = createModal
-		u.pages[u.currentPage].Update(msg)
+		// u.pages[u.currentPage].Update(msg)
 		u = u.refreshFooterKeyMap()
 	case message.CreateTask:
 		u.currentPage = kanbanPage
+		// u.pages[u.currentPage].Update(msg)
 		u = u.refreshFooterKeyMap()
 	case message.RefreshKeymap:
 		u = u.refreshFooterKeyMap()
 	case message.CloseDialog:
 		u.currentPage = kanbanPage
-
 		u.pages[u.currentPage].Update(msg)
 		u = u.refreshFooterKeyMap()
 	case message.GoBack:
-		if u.currentPage != dashboardPage {
-			u.currentPage = dashboardPage
-			// u.pages[dashboardPage].Update(msg)
+		u.currentPage = dashboardPage
+		// u.pages[u.currentPage].Update(msg)
 
-			u = u.refreshFooterKeyMap()
-			u = u.resetHeader()
-		}
+		u = u.refreshFooterKeyMap()
+		u = u.resetHeader()
 
 	case tea.KeyMsg:
 		switch {

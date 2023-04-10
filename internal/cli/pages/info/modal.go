@@ -44,6 +44,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.desc = msg.Desc
 	case tea.KeyMsg:
 		switch {
+		case key.Matches(msg, keymap.Escape):
+			fallthrough
 		case key.Matches(msg, keymap.Close):
 			cmds = append(cmds, message.CloseDialogCmd)
 		case key.Matches(msg, keymap.Quit):

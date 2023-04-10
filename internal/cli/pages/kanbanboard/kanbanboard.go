@@ -83,7 +83,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			Desc:    msg.Desc,
 		})
 		if err == nil {
-			cmds = append(cmds, m.lists[todo].InsertItem(100, t))
+			cmds = append(cmds, m.lists[todo].InsertItem(100, *t))
 		}
 	case tasksQueriedMsg:
 		list := []list.Item{}

@@ -61,6 +61,7 @@ func (m Model) Init() tea.Cmd {
 		func() tea.Msg {
 			return m.queryBoards()
 		},
+		message.RefreshKeyMapCmd,
 	)
 }
 
@@ -102,7 +103,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				})
 			}
 		case key.Matches(msg, keymap.New):
-
 			cmds = append(cmds, m.createBoard)
 		case key.Matches(msg, keymap.Quit):
 			cmds = append(cmds, tea.Quit)

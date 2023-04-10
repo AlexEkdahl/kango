@@ -98,6 +98,7 @@ func createSQLiteDB(dbPath, dbName string) (*sql.DB, error) {
 	// Replace ~ symbol with the user's home directory
 	dbPath = strings.Replace(dbPath, "~", homeDir, 1)
 
+	fmt.Println("dbPath", dbPath)
 	dbFilePath := filepath.Join(dbPath, dbName)
 	shouldCreateTable := false
 

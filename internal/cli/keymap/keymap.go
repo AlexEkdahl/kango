@@ -58,7 +58,7 @@ var (
 		key.WithHelp("d", "delete"),
 	)
 	Quit = key.NewBinding(
-		key.WithKeys("ctrl+c", "q"),
+		key.WithKeys("ctrl+c"),
 		key.WithHelp("ctrl+c", "quit"),
 	)
 
